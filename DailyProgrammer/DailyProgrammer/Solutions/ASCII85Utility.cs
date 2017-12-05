@@ -8,103 +8,94 @@ namespace DailyProgrammer.Solutions
     //https://www.reddit.com/r/dailyprogrammer/comments/7gdsy4/20171129_challenge_342_intermediate_ascii85/
     public static class ASCII85Utility
     {
-        private static int numPad = 0;
-
+        /// <summary>
+        /// Process the daily programmer challenge inputs
+        /// </summary>
         public static void Go()
         {
-            var input = "";
-            while(input != "quit")
-            {
-                input = Console.ReadLine();
-                switch (input)
-                {
-                    case "encode":
-                        Console.WriteLine("input text to be encoded");
-                        Encode(Console.ReadLine());
-                        break;
-                    case "decode":
-                        Console.WriteLine("input text to be decoded");
-                        Decode(Console.ReadLine());
-                        break;
-                }
-            }
+            Encode("Attack at dawn");
+            Decode("87cURD_*#TDfTZ)+T");
+            Decode("06/^V@;0P'E,ol0Ea`g%AT@");
+            Decode("7W3Ei+EM%2Eb-A%DIal2AThX&+F.O,EcW@3B5\\nF/hR");
+            Encode("Mom, send dollars!");
+            Decode("6#:?H$@-Q4EX`@b@<5ud@V'@oDJ'8tD[CQ-+T");
         }
-
+        /// <summary>
+        /// Decode input to ascii text
+        /// </summary>
+        /// <param name="input">Must be a valid ASCII85 encoded string</param>
         public static void Decode(string input)
         {
+            //pad tracks how many characters are added to input
+            var pad = 0;
+            //Pad input so it can be divided evenly into char[5] arrays
             while (input.Length % 5 != 0)
             {
                 input += "u";
-                numPad++;
+                pad++;
             }
+            //Split input into char[5] arrays
             var charArrays = input.ToCharArrays(5);
             var result = "";
-
+            //Decode each encoded char[5] and add it to result
             foreach(var c in charArrays)
             {
                 var current = DecodeFiveByteCharArray(c);
                 result += current;
             }
-            
-            Console.WriteLine(result.Substring(0, result.Length-numPad));
-
-            numPad = 0;
+            //Output result trimmed by pad
+            Console.WriteLine(result.Substring(0, result.Length - pad));
         }
-
+        /// <summary>
+        /// Encode input to a ASCII85 string
+        /// </summary>
+        /// <param name="input"></param>
         public static void Encode(string input)
         {
-            var sic = input;
-            while(sic.Length % 4 != 0)
+            //pad tracks how many characters are added to input
+            var pad = 0;
+            //Pad input so it can be divided evenly into char[4] arrays
+            while (input.Length % 4 != 0)
             {
-                sic = sic + " ";
-                numPad++;
+                input = input + " ";
+                pad++;
             }
+            //Split input into char[5] arrays
             var charArrays = input.ToCharArrays(4);
             var result = "";
-
+            //Encode each char[4] to an ASCII85 string and add it to result
             foreach(var a in charArrays)
             {
                 result += EncodeFourByteCharArray(a);
             }
-
-            result = result.Substring(0, result.Length - numPad);
-            numPad = 0;
-
-            Console.WriteLine(result);
+            //Output result trimmed by pad
+            Console.WriteLine(result.Substring(0, result.Length - pad));
         }
-
-        private static List<char[]> GetCharArraysFromEncodedString(string input)
-        {
-            var bigCharArray = input.ToCharArray();
-            var result = new List<char[]>();
-
-            for(var i = 0; i < input.Length/5; i++)
-            {
-                var current = new char[5] { bigCharArray[i * 5 + 0], bigCharArray[i * 5 + 1], bigCharArray[i * 5 + 2], bigCharArray[i * 5 + 3], bigCharArray[i * 5 + 4] };
-                result.Add(current);
-            }
-
-            return result;
-        }
-        
+        /// <summary>
+        /// Encode a char[4] to an ASCII85 string
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private static string EncodeFourByteCharArray(char[] input)
         {
-            var result = "";
+            //Concat will hold the concatenated binary string build from input
             var concat = "";
-
+            //Extract input bytes and add to concat
             for (var i = 0; i < input.Length; i++)
             {
                 concat += Convert.ToString(Convert.ToByte(input[i]), 2).PadLeft(8, '0');
             }
-
+            //Convert to integer
             var value = Convert.ToInt32(concat, 2);
-
+            //Decompose by 85 to get radix85 numbers
+            //Ascii encode by adding 33
             var v1 = (value % 85) + 33;
             var v2 = ((value / 85) % 85) + 33;
             var v3 = (((value / 85) / 85) % 85) + 33;
             var v4 = ((((value / 85) / 85) / 85) % 85) + 33;
             var v5 = (((((value / 85) / 85) / 85) / 85) % 85) + 33;
-
+            //Convert to ascii and add to result
+            var result = "";
             result += Convert.ToChar(v5);
             result += Convert.ToChar(v4);
             result += Convert.ToChar(v3);
@@ -113,50 +104,63 @@ namespace DailyProgrammer.Solutions
 
             return result;
         }
-
+        /// <summary>
+        /// Decode ASCII85 char[5] to ASCII string
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private static string DecodeFiveByteCharArray(char[] input)
         {
-            var result = "";
             var value = 0;
-            var radixEF = new List<int>();
-            var recomposeMid = new List<int>();
-            var charrs = new List<byte>();
-
+            var radix = new List<int>();
+            var recomposeVals = new List<int>();
+            //Extract ASCII values from input and subtract 33 to decode to radix85
             for(var i = 0; i < 5; i++)
             {
-                var test = (int)input[i];
-                radixEF.Add(test-33);
-                value += ((test - 33) * (int)Math.Pow(85, i));
+                var current = (int)input[i];
+                radix.Add(current - 33);
+                value += ((current - 33) * (int)Math.Pow(85, i));
             }
 
-            radixEF.Reverse();
-
-            for(var i = 0; i < radixEF.Count; i++)
+            radix.Reverse();
+            //Get values to recompose radix85 into integer
+            for(var i = 0; i < radix.Count; i++)
             {
-                var recomposeMidVal = (radixEF[i]*((int)Math.Pow(85, i)));
-                recomposeMid.Add(recomposeMidVal);
+                var recomposeVal = (radix[i]*((int)Math.Pow(85, i)));
+                recomposeVals.Add(recomposeVal);
             }
-
+            //Sum recompose values to get integer
             var final = 0;
-            recomposeMid.ForEach(v => final += v);
-
-            var tcharr = Convert.ToString(final, 2);
-
-            while (tcharr.Length % 8 != 0)
+            recomposeVals.ForEach(v => final += v);
+            //Convert to binary
+            var binaryString = Convert.ToString(final, 2);
+            //Convert bit string to byte array
+            var bytes = GetBytesFromBitString(binaryString);
+            //Convert to ASCII
+            return Encoding.ASCII.GetString(bytes);
+        }
+        /// <summary>
+        /// Splits input into a byte[]
+        /// </summary>
+        /// <param name="input">Must be a binary string</param>
+        /// <returns>byte[]</returns>
+        private static byte[] GetBytesFromBitString(string input)
+        {
+            //Pad input to ensure we have an even number of bytes
+            while (input.Length % 8 != 0)
             {
-                tcharr = "0" + tcharr;
+                input = "0" + input;
             }
 
-            int numOfBytes = tcharr.Length / 8;
+            int numOfBytes = input.Length / 8;
             byte[] bytes = new byte[numOfBytes];
 
             for (int i = 0; i < numOfBytes; ++i)
             {
-                bytes[i] = Convert.ToByte(tcharr.Substring(8 * i, 8), 2);
+                bytes[i] = Convert.ToByte(input.Substring(8 * i, 8), 2);
             }
 
-            result = Encoding.ASCII.GetString(bytes);
-            return result;
+            return bytes;
         }
     }
 }
