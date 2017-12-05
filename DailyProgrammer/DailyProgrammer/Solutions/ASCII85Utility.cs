@@ -32,14 +32,23 @@ namespace DailyProgrammer.Solutions
 
         public static void Decode(string input)
         {
-            var charArrays = input.ToCharArrays(5);//GetCharArraysFromEncodedString(input);
+            while (input.Length % 5 != 0)
+            {
+                input += "u";
+                numPad++;
+            }
+            var charArrays = input.ToCharArrays(5);
             var result = "";
+
             foreach(var c in charArrays)
             {
                 var current = DecodeFiveByteCharArray(c);
                 result += current;
             }
-            Console.WriteLine(result);
+            
+            Console.WriteLine(result.Substring(0, result.Length-numPad));
+
+            numPad = 0;
         }
 
         public static void Encode(string input)
