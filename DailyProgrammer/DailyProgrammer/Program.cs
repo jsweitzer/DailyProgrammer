@@ -1,4 +1,5 @@
 ﻿using System;
+using DailyProgrammer.Solutions;
 
 namespace DailyProgrammer
 {
@@ -6,7 +7,16 @@ namespace DailyProgrammer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var input = "";
+            while(input != "quit")
+            {
+                Console.WriteLine("Ready...");
+                input = Console.ReadLine();
+                switch(input){
+                    case "help": Help.EnumerateCmds(); break;
+                    case "scales": MajorScales.Go(); break;
+                }
+            }
         }
     }
 }
