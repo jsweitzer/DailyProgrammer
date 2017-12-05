@@ -49,12 +49,7 @@ namespace DailyProgrammer.Solutions
             {
                 var deltaIndex = Enum.Parse<Solfege>(solfegeNote);
                 var initialIndex = Enum.Parse<ChromaticScale>(scaleName);
-                var choiceIndex = (int)deltaIndex + (int)initialIndex;
-
-                while (choiceIndex > 11)
-                {
-                    choiceIndex = choiceIndex - 12;
-                }
+                var choiceIndex = ((int)deltaIndex + (int)initialIndex)%12;
 
                 Console.WriteLine((ChromaticScale)choiceIndex);
             }catch(Exception e)
