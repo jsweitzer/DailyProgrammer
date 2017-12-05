@@ -19,6 +19,7 @@ namespace DailyProgrammer.Solutions
             Decode("7W3Ei+EM%2Eb-A%DIal2AThX&+F.O,EcW@3B5\\nF/hR");
             Encode("Mom, send dollars!");
             Decode("6#:?H$@-Q4EX`@b@<5ud@V'@oDJ'8tD[CQ-+T");
+            Decode("<+oue+DGm>@3B#nB-;8(D/a<&+EMXFBl7Q9+BNK*+DGpFF!+q+B.b;uF=2,PBQ[s!+Ws`tBlbD2F!+t5@=!2O/hTM\"DC9NK@V'@iAThW-BlksM6uR/iA8cQ4A8cQB");
         }
         /// <summary>
         /// Decode input to ascii text
