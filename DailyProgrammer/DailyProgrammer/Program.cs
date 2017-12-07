@@ -8,14 +8,16 @@ namespace DailyProgrammer
         static void Main(string[] args)
         {
             var input = "";
-            while(input != "quit")
+            while (input != "quit")
             {
                 Console.WriteLine("Ready...");
                 input = Console.ReadLine();
-                switch(input){
+                switch (input)
+                {
                     case "help": Help.EnumerateCmds(); break;
                     case "scales": MajorScales.Go(); break;
                     case "ASCII": ASCII85Utility.Go(); break;
+                    case "Polynomials": PolynomialDivision.Go(); break;
                 }
             }
         }
