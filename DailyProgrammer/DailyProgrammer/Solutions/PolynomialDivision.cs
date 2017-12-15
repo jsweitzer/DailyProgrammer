@@ -20,6 +20,27 @@ namespace DailyProgrammer.Solutions
         {
             var numNoms = BuildNomList(numerator);
             var dNoms = BuildNomList(denominator);
+            var workingNoms = new List<Nom>();
+            var result = new List<Nom>();
+            //Step one - divide the first nom in numNoms by the first Nom in dNoms
+            result.Add(DivideNoms(numNoms[0], dNoms[0]));
+            //Step two - multiply the result of step one across all dNoms
+            //Step three - subtract each result from step two from it's corresponding value in numNoms by index. Carry down any extra Noms in numNoms
+            //Step four - assign the result of the previous step to workingNoms
+            //Step five - divide the first nom in workingNoms by the firstNom in dNoms
+            //Step six - multiply the result of step five across all dNoms
+            //Step seven - subtract each result of step six from it's corresponding value in workingNoms by index + 1. Carry down any extra Noms in workingNoms
+            //Step eight - repeat steps four -> seven until the power of x in dNom is greater than the power of x at workingNoms[0]
+        }
+        //Divide two Noms
+        public static Nom DivideNoms(Nom numerator, Nom denominator)
+        {
+            if (numerator.HasX && denominator.HasX)
+            {
+                numerator.Power -= denominator.Power;
+            }
+            numerator.Constant = numerator.Constant / denominator.Constant;
+            return numerator;
         }
         //Build a Nom based on input. DOES NOT SET THE SIGN
         public static Nom ParseNom(string input)
@@ -42,16 +63,6 @@ namespace DailyProgrammer.Solutions
             }
 
             return result;
-        }
-        //Divide two Noms
-        public static Nom DivideNoms(Nom numerator, Nom denominator)
-        {
-            if(numerator.HasX && denominator.HasX)
-            { 
-                numerator.Power -= denominator.Power;
-            }
-            numerator.Constant = numerator.Constant / denominator.Constant;
-            return numerator;
         }
         //Takes a string of Noms with powers and returns a List<Nom>
         public static List<Nom> BuildNomList(string input)
