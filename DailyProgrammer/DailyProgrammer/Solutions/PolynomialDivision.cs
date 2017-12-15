@@ -15,24 +15,13 @@ namespace DailyProgrammer.Solutions
 
             Divide(numerator, denominator);
         }
-
+        //Magic?
         public static void Divide(string numerator, string denominator)
         {
-            var nArray = numerator.Split(" ");
-            var dArray = denominator.Split(" ");
-            var dFirst = nArray[0];
-            var nomArray = new List<Nom>();
-
-            for(var i = 0; i < nomArray.Count; i++)
-            {
-                
-            }
-
-            foreach(var n in nArray)
-            {
-
-            }
+            var numNoms = BuildNomList(numerator);
+            var dNoms = BuildNomList(denominator);
         }
+        //Build a Nom based on input. DOES NOT SET THE SIGN
         public static Nom ParseNom(string input)
         {
             var result = new Nom();
@@ -54,23 +43,54 @@ namespace DailyProgrammer.Solutions
 
             return result;
         }
-
+        //Divide two Noms
         public static Nom DivideNoms(Nom numerator, Nom denominator)
         {
             if(numerator.HasX && denominator.HasX)
-            {
+            { 
                 numerator.Power -= denominator.Power;
             }
             numerator.Constant = numerator.Constant / denominator.Constant;
             return numerator;
         }
+        //Takes a string of Noms with powers and returns a List<Nom>
+        public static List<Nom> BuildNomList(string input)
+        {
+            var nArray = input.Split(" ");
+            var nomArray = new List<Nom>();
+            //Tempsign keeps track of the previous sign in the array so we can assign in to the
+            //Nom objects built in the loop below. Default to true since positive is implied for
+            //The first expression if no sign is shown.
+            var tempSign = true;
+            //Pack all of the numerator expressions into Nom objects
+            for (int i = 0; i < nArray.Length; i++)
+            {
+                //The current value at index i of nArray
+                var currentVal = nArray[i];
+                //The nom object we will be adding for this loop (if we're not on a + or - sign)
+                var currentNom = new Nom();
+                //If we don't have a sign, we have a Nom
+                if (currentVal != "+" && currentVal != "-")
+                {
+                    currentNom = ParseNom(currentVal);
+                    currentNom.IsPositive = tempSign;
+                    nomArray.Add(currentNom);
+                    //If we have a sign, set tempSign for the next Nom
+                }
+                else if (currentVal == "+" || currentVal == "-")
+                {
+                    tempSign = currentVal.Equals("+");
+                }
+            }
+            return nomArray;
+        }
     }
-
+    //The Nom object. Nice.
     public class Nom
     {
         public int Constant { get; set; }
         public bool HasX { get; set; }
         public int Power { get; set; }
-        public bool Positive { get; set; }
+        public bool IsPositive { get; set; }
     }
 }
