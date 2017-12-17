@@ -158,6 +158,7 @@ namespace DailyProgrammer.Solutions
             }
             return result;
         }
+        //Returns the result of top - bottom
         public static List<Nom> SubtractAcrossNoms(List<Nom> top, List<Nom> bottom)
         {
             var result = new List<Nom>();
