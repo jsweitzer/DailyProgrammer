@@ -45,7 +45,7 @@ namespace DailyProgrammer.Solutions
         // This method requests the home page content for the specified server.
         public static string SocketSendReceive(string server, int port)
         {
-            string request = "GET / HTTP/1.1\r\nHost: " + server +
+            string request = "GET /anything HTTP/1.1\r\nHost: " + server +
                 "\r\nConnection: Close\r\n\r\n";
             Byte[] bytesSent = Encoding.ASCII.GetBytes(request);
             Byte[] bytesReceived = new Byte[256];
