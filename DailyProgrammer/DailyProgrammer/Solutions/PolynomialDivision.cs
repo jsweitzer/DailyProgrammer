@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace DailyProgrammer.Solutions
 {
@@ -14,37 +15,38 @@ namespace DailyProgrammer.Solutions
             var denominator = "x - 3";
 
             Divide(numerator, denominator);
+
+            numerator = "2x4 - 9x3 + 21x2 - 26x + 12";
+            denominator = "2x - 3";
+
+            Divide(numerator, denominator);
+
+            numerator = "10x4 - 7x2 - 1";
+            denominator = "x2 - x + 3";
+
+            Divide(numerator, denominator);
         }
-        //Magic?
+        //Long division method
         public static void Divide(string numerator, string denominator)
         {
+            Console.WriteLine("Dividing " + numerator + " by " + denominator);
             var numNoms = BuildNomList(numerator);
             var dNoms = BuildNomList(denominator);
             var workingNoms1 = new List<Nom>();
-            var workingNoms2 = new List<Nom>();
+            var workingNoms2 = numNoms;
             var result = new List<Nom>();
-            //Step one - divide the first nom in numNoms by the first Nom in dNoms and add it to the result set
-            result.Add(DivideNoms(numNoms[0], dNoms[0]));
-            //Step two - multiply the result of step one across all dNoms
-            workingNoms1 = MultiplyAcrossNoms(dNoms, result[0]);
-            //Step three - subtract each result from step two from it's corresponding value in numNoms by index. Carry down any extra Noms in numNoms
-            //Step four - assign the result of the previous step to workingNoms2
-            workingNoms2 = SubtractAcrossNoms(numNoms, workingNoms1);
-            workingNoms2 = ClearZeroNoms(workingNoms2);
-            //Step five - divide the first nom in workingNoms by the firstNom in dNoms and add it to the result set
-            result.Add(DivideNoms(workingNoms2[0], dNoms[0]));
-            //Step six - multiply the result of the previous step across all dNoms
-            workingNoms1 = MultiplyAcrossNoms(dNoms, result[1]);
-            //Step seven - subtract each result of the previous step from it's corresponding value in workingNoms by index. Carry down any extra Noms in workingNoms
-            if(!IsComplete(workingNoms2, workingNoms1))
+            var counter = 0;
+            var isComplete = false;
+            while (!isComplete)
+            {
+                result.Add(DivideNoms(workingNoms2[0], dNoms[0]));
+                workingNoms1 = MultiplyAcrossNoms(dNoms, result[counter]);
+                counter++;
                 workingNoms2 = SubtractAcrossNoms(workingNoms2, workingNoms1);
-            workingNoms2 = ClearZeroNoms(workingNoms2);
-            result.Add(DivideNoms(workingNoms2[0], dNoms[0]));
-            workingNoms1 = MultiplyAcrossNoms(dNoms, result[2]);
-            workingNoms2 = SubtractAcrossNoms(workingNoms2, workingNoms1);
-            workingNoms2 = ClearZeroNoms(workingNoms2);
-            //Step eight - repeat steps four -> seven until the power of x in dNom is greater than the power of x at workingNoms[0]
-            //The solution is the result * workingNoms/numNoms
+                workingNoms2 = ClearZeroNoms(workingNoms2);
+                isComplete = IsComplete(dNoms, workingNoms2);
+            }
+            PrintResults(result, workingNoms2);
         }
         //Multiply two Noms
         public static Nom MultiplyNoms(Nom input1, Nom input2)
@@ -142,26 +144,35 @@ namespace DailyProgrammer.Solutions
             }
             return result;
         }
-        public static List<Nom> SubtractAcrossNoms(List<Nom> dividend, List<Nom> subtractor)
+        public static List<Nom> SubtractAcrossNoms(List<Nom> top, List<Nom> bottom)
         {
             var result = new List<Nom>();
-            for(int i = 0; i < dividend.Count; i ++)
+            for(int i = 0; i < top.Count; i ++)
             {
-                if(i < subtractor.Count)
+                if(bottom.FindIndex(n => n.Power == top[i].Power) != -1)
                 {
-                    result.Add(SubtractNom(dividend[i], subtractor[i]));
+                    result.Add(SubtractNom(top[i], bottom[bottom.FindIndex(n => n.Power == top[i].Power)]));
                 }
                 else
                 {
-                    result.Add(dividend[i]);
+                    result.Add(top[i]);
                 }
             }
+            foreach(var n in bottom)
+            {
+                if(result.FindIndex(r => r.Power == n.Power) == -1)
+                {
+                    n.Constant = n.Constant * -1;
+                    result.Add(n);
+                }
+            }
+            result = result.OrderByDescending(r => r.Power).ToList();
             return result;
         }
         //Check so see if calculations can be continued
         public static bool IsComplete(List<Nom> denoms, List<Nom> curnoms)
         {
-            return denoms[0].Power > curnoms[0].Power;
+            return curnoms.Count == 0 || (denoms[0].Power > curnoms[0].Power);
         }
         //Clear out Noms that have a constant of 0
         public static List<Nom> ClearZeroNoms(List<Nom> input)
@@ -175,6 +186,25 @@ namespace DailyProgrammer.Solutions
                 }
             }
             return result;
+        }
+        //Print results
+        public static void PrintResults(List<Nom> quotient, List<Nom> remainder)
+        {
+            string result = "Result: ";
+            for(int i = 0; i < quotient.Count; i++)
+            {
+                result += quotient[i].Constant;
+                result = quotient[i].HasX ? result + "x" + quotient[i].Power : result;
+                result = (i == quotient.Count - 1) ? result + " ": result + " + ";
+            }
+            result += "Remainder: ";
+            for(int i = 0; i < remainder.Count; i++)
+            {
+                result += remainder[i].Constant;
+                result = remainder[i].HasX ? result + "x" + remainder[i].Power : result;
+                result = (i == remainder.Count - 1) ? result : result + " + ";
+            }
+            Console.WriteLine(result);
         }
     }
     //The Nom object. Nice.
