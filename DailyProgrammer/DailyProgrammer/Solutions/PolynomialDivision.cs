@@ -20,28 +20,63 @@ namespace DailyProgrammer.Solutions
         {
             var numNoms = BuildNomList(numerator);
             var dNoms = BuildNomList(denominator);
-            var workingNoms = new List<Nom>();
+            var workingNoms1 = new List<Nom>();
+            var workingNoms2 = new List<Nom>();
             var result = new List<Nom>();
             //Step one - divide the first nom in numNoms by the first Nom in dNoms and add it to the result set
             result.Add(DivideNoms(numNoms[0], dNoms[0]));
             //Step two - multiply the result of step one across all dNoms
+            workingNoms1 = MultiplyAcrossNoms(dNoms, result[0]);
             //Step three - subtract each result from step two from it's corresponding value in numNoms by index. Carry down any extra Noms in numNoms
-            //Step four - assign the result of the previous step to workingNoms
+            //Step four - assign the result of the previous step to workingNoms2
+            workingNoms2 = SubtractAcrossNoms(numNoms, workingNoms1);
+            workingNoms2 = ClearZeroNoms(workingNoms2);
             //Step five - divide the first nom in workingNoms by the firstNom in dNoms and add it to the result set
+            result.Add(DivideNoms(workingNoms2[0], dNoms[0]));
             //Step six - multiply the result of the previous step across all dNoms
-            //Step seven - subtract each result of the previous step from it's corresponding value in workingNoms by index + 1. Carry down any extra Noms in workingNoms
+            workingNoms1 = MultiplyAcrossNoms(dNoms, result[1]);
+            //Step seven - subtract each result of the previous step from it's corresponding value in workingNoms by index. Carry down any extra Noms in workingNoms
+            if(!IsComplete(workingNoms2, workingNoms1))
+                workingNoms2 = SubtractAcrossNoms(workingNoms2, workingNoms1);
+            workingNoms2 = ClearZeroNoms(workingNoms2);
+            result.Add(DivideNoms(workingNoms2[0], dNoms[0]));
+            workingNoms1 = MultiplyAcrossNoms(dNoms, result[2]);
+            workingNoms2 = SubtractAcrossNoms(workingNoms2, workingNoms1);
+            workingNoms2 = ClearZeroNoms(workingNoms2);
             //Step eight - repeat steps four -> seven until the power of x in dNom is greater than the power of x at workingNoms[0]
             //The solution is the result * workingNoms/numNoms
+        }
+        //Multiply two Noms
+        public static Nom MultiplyNoms(Nom input1, Nom input2)
+        {
+            var result = new Nom();
+            result.Constant = input1.Constant * input2.Constant;
+            result.HasX = input1.HasX || input2.HasX;
+            result.Power = input1.Power + input2.Power;
+            return result;
         }
         //Divide two Noms
         public static Nom DivideNoms(Nom numerator, Nom denominator)
         {
+            var result = new Nom();
+            result.HasX = numerator.HasX;
             if (numerator.HasX && denominator.HasX)
             {
-                numerator.Power -= denominator.Power;
+                result.Power = numerator.Power - denominator.Power;
             }
-            numerator.Constant = numerator.Constant / denominator.Constant;
-            return numerator;
+            result.Constant = numerator.Constant / denominator.Constant;
+            return result;
+        }
+        //Subtract Nom
+        public static Nom SubtractNom(Nom top, Nom bottom)
+        {
+            if (top.Power != bottom.Power) throw new InvalidOperationException("Cannot get difference of different powers");
+
+            var result = new Nom();
+            result.Constant = top.Constant - bottom.Constant;
+            result.HasX = top.HasX && bottom.HasX;
+            result.Power = top.Power;
+            return result;
         }
         //Build a Nom based on input. DOES NOT SET THE SIGN
         public static Nom ParseNom(string input)
@@ -60,12 +95,13 @@ namespace DailyProgrammer.Solutions
             else
             {
                 result.Constant = int.Parse(input);
+                result.Power = 0;
                 result.HasX = false;
             }
 
             return result;
         }
-        //Takes a string of Noms with powers and returns a List<Nom>
+        //Takes a string of Noms and returns a List<Nom>
         public static List<Nom> BuildNomList(string input)
         {
             var nArray = input.Split(" ");
@@ -85,7 +121,7 @@ namespace DailyProgrammer.Solutions
                 if (currentVal != "+" && currentVal != "-")
                 {
                     currentNom = ParseNom(currentVal);
-                    currentNom.IsPositive = tempSign;
+                    currentNom.Constant = tempSign ? currentNom.Constant : currentNom.Constant * -1;
                     nomArray.Add(currentNom);
                     //If we have a sign, set tempSign for the next Nom
                 }
@@ -96,6 +132,50 @@ namespace DailyProgrammer.Solutions
             }
             return nomArray;
         }
+        //Multiple all input Noms by multipler
+        public static List<Nom> MultiplyAcrossNoms(List<Nom> input, Nom multiplier)
+        {
+            var result = new List<Nom>();
+            foreach(var n in input)
+            {
+                result.Add(MultiplyNoms(n, multiplier));
+            }
+            return result;
+        }
+        public static List<Nom> SubtractAcrossNoms(List<Nom> dividend, List<Nom> subtractor)
+        {
+            var result = new List<Nom>();
+            for(int i = 0; i < dividend.Count; i ++)
+            {
+                if(i < subtractor.Count)
+                {
+                    result.Add(SubtractNom(dividend[i], subtractor[i]));
+                }
+                else
+                {
+                    result.Add(dividend[i]);
+                }
+            }
+            return result;
+        }
+        //Check so see if calculations can be continued
+        public static bool IsComplete(List<Nom> denoms, List<Nom> curnoms)
+        {
+            return denoms[0].Power > curnoms[0].Power;
+        }
+        //Clear out Noms that have a constant of 0
+        public static List<Nom> ClearZeroNoms(List<Nom> input)
+        {
+            var result = new List<Nom>();
+            foreach(var n in input)
+            {
+                if(n.Constant != 0)
+                {
+                    result.Add(n);
+                }
+            }
+            return result;
+        }
     }
     //The Nom object. Nice.
     public class Nom
@@ -103,6 +183,5 @@ namespace DailyProgrammer.Solutions
         public int Constant { get; set; }
         public bool HasX { get; set; }
         public int Power { get; set; }
-        public bool IsPositive { get; set; }
     }
 }
