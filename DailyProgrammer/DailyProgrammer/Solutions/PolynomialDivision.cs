@@ -30,23 +30,37 @@ namespace DailyProgrammer.Solutions
         public static void Divide(string numerator, string denominator)
         {
             Console.WriteLine("Dividing " + numerator + " by " + denominator);
-            var numNoms = BuildNomList(numerator);
+
+            //minuend is the current expression being acted on by the denominator and subtrahend
+            var minuend = BuildNomList(numerator);
+            //dNoms is the denominator expression
             var dNoms = BuildNomList(denominator);
-            var workingNoms1 = new List<Nom>();
-            var workingNoms2 = numNoms;
+            //subtrahend is the expression to be subtracted from minuend
+            var subtrahend = new List<Nom>();
+            //result holds the quotient less the remainder
             var result = new List<Nom>();
+            //counter tracks the index of the result expression to be multiplied across dNoms
             var counter = 0;
+            //isComplete is set to true when the calculation is complete
             var isComplete = false;
+            //The primary calculation loop
             while (!isComplete)
             {
-                result.Add(DivideNoms(workingNoms2[0], dNoms[0]));
-                workingNoms1 = MultiplyAcrossNoms(dNoms, result[counter]);
+                //Add the first expression in minuend over the first expression in dNoms to result
+                result.Add(DivideNoms(minuend[0], dNoms[0]));
+                //Multiply the result of the previous calculation across dNoms
+                subtrahend = MultiplyAcrossNoms(dNoms, result[counter]);
+                //Increment the counter
                 counter++;
-                workingNoms2 = SubtractAcrossNoms(workingNoms2, workingNoms1);
-                workingNoms2 = ClearZeroNoms(workingNoms2);
-                isComplete = IsComplete(dNoms, workingNoms2);
+                //Set minuend = minued - subtrahend
+                minuend = SubtractAcrossNoms(minuend, subtrahend);
+                //Clear expressions with a constant of 0
+                minuend = ClearZeroNoms(minuend);
+                //Check for completion
+                isComplete = IsComplete(dNoms, minuend);
             }
-            PrintResults(result, workingNoms2);
+            //Write results to console
+            PrintResults(result, minuend);
         }
         //Multiply two Noms
         public static Nom MultiplyNoms(Nom input1, Nom input2)
@@ -125,8 +139,8 @@ namespace DailyProgrammer.Solutions
                     currentNom = ParseNom(currentVal);
                     currentNom.Constant = tempSign ? currentNom.Constant : currentNom.Constant * -1;
                     nomArray.Add(currentNom);
-                    //If we have a sign, set tempSign for the next Nom
                 }
+                //If we have a sign, set tempSign for the next Nom
                 else if (currentVal == "+" || currentVal == "-")
                 {
                     tempSign = currentVal.Equals("+");
