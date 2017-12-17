@@ -18,6 +18,7 @@ namespace DailyProgrammer
                     case "scales": MajorScales.Go(); break;
                     case "ASCII": ASCII85Utility.Go(); break;
                     case "Polynomials": PolynomialDivision.Go(); break;
+                    case "WebClient": WebClient.SocketSendReceive("www.stealmylogin.com", 80); break;
                 }
             }
         }
