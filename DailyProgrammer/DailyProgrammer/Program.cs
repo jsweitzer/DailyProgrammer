@@ -19,6 +19,7 @@ namespace DailyProgrammer
                     case "ASCII": ASCII85Utility.Go(); break;
                     case "Polynomials": PolynomialDivision.Go(); break;
                     case "WebClient": WebClient.SocketSendReceive("httpbin.org", 80); break;
+                    case "Boxes": StackingBoxes.Go(); break;
                 }
             }
         }
