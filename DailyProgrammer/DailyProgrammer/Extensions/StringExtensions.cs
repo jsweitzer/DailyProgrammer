@@ -37,23 +37,22 @@ namespace DailyProgrammer.Extensions
         }
 
         /// <summary>
-        /// Get all permutations of a string
+        /// Get all permutations of a string. Don't use this with large strings or your computer will explode.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public static List<char[]> Permutations(this String input) {
-            var result = new List<char[]>();
 
             InputSet = null;
-            permutations.Clear();
+            permutations = new List<char[]>();
             elementLevel = -1;
             numberOfElements = 0;
             permutationValue = new int[0];
-            permutationCount = 0;
+            PermutationCount = 0;
             InputSet = MakeCharArray(input);
             CalcPermutation(0);
-            result = permutations;
-            return result;
+
+            return permutations;
         }
         #region Permutation stuff
         private static int elementLevel = -1;
@@ -61,19 +60,8 @@ namespace DailyProgrammer.Extensions
         private static int[] permutationValue = new int[0];
         private static List<char[]> permutations = new List<char[]>();
 
-        private static char[] inputSet;
-        private static char[] InputSet
-        {
-            get { return inputSet; }
-            set { inputSet = value; }
-        }
-
-        private static int permutationCount = 0;
-        private static int PermutationCount
-        {
-            get { return permutationCount; }
-            set { permutationCount = value; }
-        }
+        private static char[] InputSet { get; set; }
+        private static int PermutationCount { get; set; } = 0;
 
         private static char[] MakeCharArray(string InputString)
         {
@@ -111,11 +99,11 @@ namespace DailyProgrammer.Extensions
             var newPerm = new char[value.Length];
             for (int i = 0; i < value.Length; i++)
             {
-                newPerm.SetValue(inputSet.GetValue(value[i] - 1), i);
+                newPerm.SetValue(InputSet.GetValue(value[i] - 1), i);
             }
             permutations.Add(newPerm);
             PermutationCount++;
         }
-#endregion
+        #endregion
     }
 }
