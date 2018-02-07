@@ -1,5 +1,7 @@
 ﻿using System;
 using DailyProgrammer.Solutions;
+using DailyProgrammer.Enums;
+using DailyProgrammer.UI;
 
 namespace DailyProgrammer
 {
@@ -7,19 +9,20 @@ namespace DailyProgrammer
     {
         static void Main(string[] args)
         {
-            var input = "";
-            while (input != "quit")
+            var input = new Cmd();
+
+            while (input != Cmd.quit)
             {
                 Console.WriteLine("Ready...");
-                input = Console.ReadLine();
+                input = Parser.GetCmd(Console.ReadLine());
                 switch (input)
                 {
-                    case "help": Help.EnumerateCmds(); break;
-                    case "scales": MajorScales.Go(); break;
-                    case "ASCII": ASCII85Utility.Go(); break;
-                    case "Polynomials": PolynomialDivision.Go(); break;
-                    case "WebClient": WebClient.SocketSendReceive("httpbin.org", 80); break;
-                    case "Boxes": StackingBoxes.Go(); break;
+                    case Cmd.help: Help.EnumerateCmds(); break;
+                    case Cmd.scales: MajorScales.Go(); break;
+                    case Cmd.ascii: ASCII85Utility.Go(); break;
+                    case Cmd.polynomials: PolynomialDivision.Go(); break;
+                    case Cmd.webclient: WebClient.Go(); break;
+                    case Cmd.boxes: StackingBoxes.Go(); break;
                 }
             }
         }
