@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using DailyProgrammer.Enums;
 
 namespace DailyProgrammer.UI
@@ -10,8 +8,7 @@ namespace DailyProgrammer.UI
         
         public static Cmd GetCmd(string input)
         {
-            object cmd;
-            return Enum.TryParse(typeof(Cmd), input, true, out cmd) ? (Cmd)cmd : Cmd.unrecognized;
+            return Enum.TryParse(typeof(Cmd), input, true, out object cmd) ? (Cmd)cmd : Cmd.unrecognized;
         }
     }
 }

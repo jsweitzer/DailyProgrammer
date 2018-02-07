@@ -14,8 +14,8 @@ namespace DailyProgrammer
             while (input != Cmd.quit)
             {
                 Console.WriteLine("Ready...");
-                input = Parser.GetCmd(Console.ReadLine());
-                switch (input)
+
+                switch (Parser.GetCmd(Console.ReadLine()))
                 {
                     case Cmd.help: Help.EnumerateCmds(); break;
                     case Cmd.scales: MajorScales.Go(); break;

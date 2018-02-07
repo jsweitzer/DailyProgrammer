@@ -42,16 +42,7 @@ namespace DailyProgrammer.Extensions
         /// <param name="input"></param>
         /// <returns></returns>
         public static List<char[]> Permutations(this String input) {
-
-            InputSet = null;
-            permutations = new List<char[]>();
-            elementLevel = -1;
-            numberOfElements = 0;
-            permutationValue = new int[0];
-            PermutationCount = 0;
-            InputSet = MakeCharArray(input);
-            CalcPermutation(0);
-
+            Permutate(input);
             return permutations;
         }
         #region Permutation stuff
@@ -62,6 +53,18 @@ namespace DailyProgrammer.Extensions
 
         private static char[] InputSet { get; set; }
         private static int PermutationCount { get; set; } = 0;
+
+        public static void Permutate(string input)
+        {
+            InputSet = null;
+            permutations = new List<char[]>();
+            elementLevel = -1;
+            numberOfElements = 0;
+            permutationValue = new int[0];
+            PermutationCount = 0;
+            InputSet = MakeCharArray(input);
+            CalcPermutation(0);
+        }
 
         private static char[] MakeCharArray(string InputString)
         {
