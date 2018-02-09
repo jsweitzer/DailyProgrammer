@@ -6,7 +6,7 @@ using System.Linq;
 namespace DailyProgrammer.Solutions
 {
     //https://www.reddit.com/r/dailyprogrammer/comments/7fvy7z/20171127_challenge_342_easy_polynomial_division/
-    public static class PolynomialDivision
+    public static class Polynomials
     {
         public static void Go()
         {

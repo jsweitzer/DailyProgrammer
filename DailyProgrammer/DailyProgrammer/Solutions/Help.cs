@@ -8,13 +8,13 @@ namespace DailyProgrammer.Solutions
     {
         public static Dictionary<Cmd, string> cmds = new Dictionary<Cmd, string>()
         {
-            { Cmd.help, "Returns a list of available commands" },
-            { Cmd.scales, "Returns the name of a major scale, the solfège name of a note, and the corresponding note in that scale." },
-            { Cmd.webclient, "Lower level web client" },
-            { Cmd.quit, "Closes the console" },
-            { Cmd.boxes, "Trys to sort numbers evenly into containers. ex input: 235 2 output: 23 5" },
-            { Cmd.ascii, "ASCII85 encoder/decoder" },
-            { Cmd.polynomials, "Polynomial long division" }
+            { Cmd.Help, "Returns a list of available commands" },
+            { Cmd.Scales, "Returns the name of a major scale, the solfège name of a note, and the corresponding note in that scale." },
+            { Cmd.Webclient, "Lower level web client" },
+            { Cmd.Quit, "Closes the console" },
+            { Cmd.Boxes, "Trys to sort a weighted collection into evenly weighted sub collections" },
+            { Cmd.Ascii, "ASCII85 encoder/decoder" },
+            { Cmd.Polynomials, "Polynomial long division" }
         };
         public static void EnumerateCmds()
         {

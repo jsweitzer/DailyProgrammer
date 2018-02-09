@@ -8,7 +8,7 @@ namespace DailyProgrammer.UI
         
         public static Cmd GetCmd(string input)
         {
-            return Enum.TryParse(typeof(Cmd), input, true, out object cmd) ? (Cmd)cmd : Cmd.unrecognized;
+            return Enum.TryParse(typeof(Cmd), input, true, out object cmd) ? (Cmd)cmd : Cmd.Unrecognized;
         }
     }
 }

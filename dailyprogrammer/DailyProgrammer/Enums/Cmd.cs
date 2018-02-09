@@ -6,13 +6,14 @@ namespace DailyProgrammer.Enums
 {
     public enum Cmd
     {
-        help = 0,
-        quit = 1,
-        scales = 2,
-        ascii = 3,
-        polynomials = 4,
-        webclient = 5,
-        boxes = 6,
-        unrecognized = 99
+        Help = 0,
+        Quit = 1,
+        Scales = 2,
+        Ascii = 3,
+        Polynomials = 4,
+        Webclient = 5,
+        Boxes = 6,
+        Balance = 7,
+        Unrecognized = 99
     }
 }

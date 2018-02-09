@@ -9,20 +9,22 @@ namespace DailyProgrammer
     {
         static void Main(string[] args)
         {
-            var input = new Cmd();
+            var read = new Cmd();
+            var write = new Printer();
 
-            while (input != Cmd.quit)
+            while (read != Cmd.Quit)
             {
-                Console.WriteLine("Ready...");
+                write.Line(Out.Ready);
 
                 switch (Parser.GetCmd(Console.ReadLine()))
                 {
-                    case Cmd.help: Help.EnumerateCmds(); break;
-                    case Cmd.scales: MajorScales.Go(); break;
-                    case Cmd.ascii: ASCII85Utility.Go(); break;
-                    case Cmd.polynomials: PolynomialDivision.Go(); break;
-                    case Cmd.webclient: WebClient.Go(); break;
-                    case Cmd.boxes: StackingBoxes.Go(); break;
+                    case Cmd.Help: Help.EnumerateCmds(); break;
+                    case Cmd.Scales: MajorScales.Go(); break;
+                    case Cmd.Ascii: ASCII85Utility.Go(); break;
+                    case Cmd.Polynomials: Polynomials.Go(); break;
+                    case Cmd.Webclient: WebClient.Go(); break;
+                    case Cmd.Boxes: StackingBoxes.Go(); break;
+                    case Cmd.Balance: Balance.Go(); break;
                 }
             }
         }
