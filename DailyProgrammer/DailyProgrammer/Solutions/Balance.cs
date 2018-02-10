@@ -22,6 +22,7 @@ namespace DailyProgrammer.Solutions
         private int leftWeight;
         private int rightWeight;
         private List<int> list = new List<int>();
+        private List<int> soultions = new List<int>();
 
         public void Go()
         {
@@ -30,6 +31,10 @@ namespace DailyProgrammer.Solutions
 
             Console.WriteLine("Input int csv");
             list.AddRange(Console.ReadLine().Split(',').Map(ParseInts));
+        }
+        private void Solve()
+        {
+            rightWeight = 0; 
         }
         private int ParseInts(string s)
         {

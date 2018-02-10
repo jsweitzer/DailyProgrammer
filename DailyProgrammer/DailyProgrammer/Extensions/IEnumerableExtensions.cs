@@ -4,12 +4,12 @@ using System.Text;
 
 namespace DailyProgrammer.Extensions
 {
-    public static class ArrayExtensions
+    public static class IEnumerableExtensions
     {
         public static IEnumerable<U> Map<T, U>(this IEnumerable<T> s, Func<T, U> f)
         {
-            foreach (var item in s)
-                yield return f(item);
+            foreach (var i in s)
+                yield return f(i);
         }
     }
 }

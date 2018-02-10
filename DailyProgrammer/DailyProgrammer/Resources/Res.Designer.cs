@@ -1,6 +1,4 @@
-﻿
-
-namespace DailyProgrammer.Resources {
+﻿namespace DailyProgrammer.Resources {
     using System;
     
     
